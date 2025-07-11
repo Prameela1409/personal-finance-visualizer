@@ -1,34 +1,30 @@
 'use client';
-
-import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import { Transaction } from '../app/page';
 
-type Props = {
-    transactions: Transaction[];
-};
+export default function ExpenseChart({ transactions }) {
+    // aggregate spend per month
+    const dataMap = {};
+    transactions.forEach(({ amount, date }) => {
+        const month = new Date(date).toLocaleString('default', { month: 'short' });
+        dataMap[month] = (dataMap[month] || 0) + amount;
+    });
 
-export default function ExpenseChart({ transactions }: Props) {
-    const data = transactions.reduce((acc, t) => {
-        const month = new Date(t.date).toLocaleString('default', { month: 'short' });
-        const found = acc.find((item) => item.month === month);
-        if (found) {
-            found.amount += t.amount;
-        } else {
-            acc.push({ month, amount: t.amount });
-        }
-        return acc;
-    }, [] as { month: string; amount: number }[]);
+    const chartData = Object.keys(dataMap).map((m) => ({
+        month: m,
+        amount: dataMap[m],
+    }));
+
+    if (!chartData.length) return null;
 
     return (
-        <div className="mt-6">
-            <h2 className="text-xl font-semibold mb-2">Monthly Expenses</h2>
-            <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={data}>
+        <div style={{ height: 300, marginTop: '1.5rem' }}>
+            <h2>Monthly Expense Chart</h2>
+            <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={chartData}>
                     <XAxis dataKey="month" />
                     <YAxis />
                     <Tooltip />
-                    <Bar dataKey="amount" fill="#3b82f6" />
+                    <Bar dataKey="amount" fill="#8884d8" />
                 </BarChart>
             </ResponsiveContainer>
         </div>
