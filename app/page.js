@@ -1,35 +1,35 @@
 'use client';
-import { useState } from 'react';
+
+import React, { useState } from 'react';
 import TransactionForm from '../components/TransactionForm';
 import TransactionList from '../components/TransactionList';
 import ExpenseChart from '../components/ExpenseChart';
 
+export type Transaction = {
+  amount: number;
+  date: string;
+  description: string;
+};
+
 export default function HomePage() {
-    const [transactions, setTransactions] = useState([]);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
 
-    function addTransaction(txn) {
-        setTransactions([txn, ...transactions]);
-    }
+  const addTransaction = (transaction: Transaction) => {
+    setTransactions([transaction, ...transactions]);
+  };
 
-    function deleteTransaction(index) {
-        const updated = transactions.filter((_, i) => i !== index);
-        setTransactions(updated);
-    }
+  const deleteTransaction = (index: number) => {
+    const updated = [...transactions];
+    updated.splice(index, 1);
+    setTransactions(updated);
+  };
 
-    return (
-        <main style={{ padding: '2rem' }}>
-            <h1 style={{ fontSize: '1.8rem', fontWeight: 'bold' }}>
-                Personal Finance Visualizer
-            </h1>
-
-            <TransactionForm onAdd={addTransaction} />
-
-            <ExpenseChart transactions={transactions} />
-
-            <TransactionList
-                transactions={transactions}
-                onDelete={deleteTransaction}
-            />
-        </main>
-    );
+  return (
+    <main className="p-4 max-w-xl mx-auto">
+      <h1 className="text-2xl font-bold mb-4">Personal Finance Visualizer</h1>
+      <TransactionForm onAdd={addTransaction} />
+      <TransactionList transactions={transactions} onDelete={deleteTransaction} />
+      <ExpenseChart transactions={transactions} />
+    </main>
+  );
 }
