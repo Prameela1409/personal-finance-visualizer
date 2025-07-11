@@ -9,21 +9,19 @@ import { Transaction } from '@/types/transaction';
 export default function HomePage() {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
 
-    const handleAdd = (transaction: Transaction) => {
-        setTransactions([...transactions, transaction]);
+    const addTransaction = (t: Transaction) => {
+        setTransactions([...transactions, t]);
     };
 
-    const handleDelete = (index: number) => {
-        const newTransactions = [...transactions];
-        newTransactions.splice(index, 1);
-        setTransactions(newTransactions);
+    const deleteTransaction = (index: number) => {
+        setTransactions(transactions.filter((_, i) => i !== index));
     };
 
     return (
         <main className="p-4 max-w-2xl mx-auto">
-            <h1 className="text-2xl font-bold mb-4">Personal Finance Visualizer</h1>
-            <TransactionForm onAdd={handleAdd} />
-            <TransactionList transactions={transactions} onDelete={handleDelete} />
+            <h1 className="text-2xl font-bold mb-4">Personal Finance Tracker</h1>
+            <TransactionForm onAdd={addTransaction} />
+            <TransactionList transactions={transactions} onDelete={deleteTransaction} />
             <ExpenseChart transactions={transactions} />
         </main>
     );
