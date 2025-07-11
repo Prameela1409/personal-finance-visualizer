@@ -1,6 +1,9 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
+import TransactionForm from '../components/TransactionForm';
+import TransactionList from '../components/TransactionList';
+import ExpenseChart from '../components/ExpenseChart';
 
 type Transaction = {
   amount: number;
@@ -8,28 +11,24 @@ type Transaction = {
   description: string;
 };
 
-type Props = {
-  transactions: Transaction[];
-  onDelete: (index: number) => void;
-};
+export default function HomePage() {
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
 
-export default function TransactionList({ transactions, onDelete }: Props) {
+  const addTransaction = (transaction: Transaction) => {
+    setTransactions([transaction, ...transactions]);
+  };
+
+  const deleteTransaction = (index: number) => {
+    const newList = transactions.filter((_, i) => i !== index);
+    setTransactions(newList);
+  };
+
   return (
-    <div className="mt-4">
-      <h2 className="text-xl font-semibold mb-2">Transaction List</h2>
-      <ul>
-        {transactions.map((transaction, index) => (
-          <li key={index} className="mb-2">
-            ₹{transaction.amount} on {transaction.date} — {transaction.description}
-            <button
-              onClick={() => onDelete(index)}
-              className="ml-2 text-red-500"
-            >
-              Delete
-            </button>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <main className="p-4">
+      <h1 className="text-2xl font-bold mb-4">Personal Finance Visualizer</h1>
+      <TransactionForm onAdd={addTransaction} />
+      <ExpenseChart transactions={transactions} />
+      <TransactionList transactions={transactions} onDelete={deleteTransaction} />
+    </main>
   );
 }
