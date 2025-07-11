@@ -2,16 +2,16 @@
 
 import React from 'react';
 
-type Transaction = {
+export type Transaction = {
     amount: number;
     date: string;
     description: string;
 };
 
-type TransactionListProps = {
+interface TransactionListProps {
     transactions: Transaction[];
     onDelete: (index: number) => void;
-};
+}
 
 export default function TransactionList({
     transactions,
